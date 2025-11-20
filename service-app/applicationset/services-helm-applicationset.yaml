@@ -50,10 +50,10 @@ spec:
         path: helm/charts/services/{{svc}}
         helm:
           valueFiles:
-            - "../../values/global/common.yaml"
-            - "../../values/apps/{{svc}}.yaml"
-            - "../../values/env/{{env}}.yaml"
-            - "../../values/env-app/{{env}}/{{svc}}.yaml"
+            - "../../values/global.yaml"
+            - "../../values/envs/{{env}}.yaml"
+            - "../../values/services/{{svc}}.yaml"
+            - "../../values/services/{{svc}}-{{env}}.yaml"
           ignoreMissingValueFiles: true
       destination:
         server: '{{ default "https://kubernetes.default.svc" .cluster }}'
