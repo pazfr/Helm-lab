@@ -60,8 +60,8 @@ spec:
         - secretRef:
             name: {{ include "service.secretName" . }}
 {{- end }}
-{{- range .Values.extraEnvFrom }}
-{{ toYaml . | indent 8 }}
+{{- if .Values.extraEnvFrom }}
+{{ toYaml .Values.extraEnvFrom | indent 8 }}
 {{- end }}
 {{- end }}
 {{- if or .Values.extraEnv (not (empty .Values.envVars)) }}
@@ -70,8 +70,8 @@ spec:
         - name: {{ $k }}
           value: {{ $v | quote }}
 {{- end }}
-{{- range .Values.extraEnv }}
-{{ toYaml . | indent 8 }}
+{{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 8 }}
 {{- end }}
 {{- end }}
 {{- if .Values.volumeMounts }}

@@ -13,7 +13,7 @@ config:
     MODE: "saas"
     PRESENTATION_DETECTION_SERVER_URL: "https://liveness-presentation-detection.dev-eks.internal-services:8443"
     AWS_DEFAULT_REGION: "eu-central-1"
-    ENABLE_ANALYTICS: ""true""
+    ENABLE_ANALYTICS: "true"
 
 ingress:
   annotations:

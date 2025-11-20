@@ -1,24 +1,21 @@
 replicaCount: 2
+
 service:
   name: companies
-  port: 5002
----
-8040
----
-80
-  targetPort: 5002
----
-5008
----
-80
+  port: 8040
+  targetPort: 8040
   ports:
-  - name: ""
+  - name: core
     port: 5002
     targetPort: 5002
     protocol: TCP
-  - name: ""
+  - name: gateway-https
     port: 8040
-    targetPort: 5008
+    targetPort: 8040
+    protocol: TCP
+  - name: core-https
+    port: 8050
+    targetPort: 8050
     protocol: TCP
   - name: http
     port: 80
@@ -28,14 +25,6 @@ service:
     port: 443
     targetPort: 443
     protocol: TCP
-  - name: http-8040
-    port: 8040
-    targetPort: 8040
-    protocol: TCP
-  - name: http-8050
-    port: 8050
-    targetPort: 8050
-    protocol: TCP
   - name: http-8060
     port: 8060
     targetPort: 8060
@@ -44,19 +33,10 @@ service:
     port: 8080
     targetPort: 8080
     protocol: TCP
-  
 
 ingress:
   internal: false
----
-true
----
-true
   className: alb
----
-alb
----
-alb
   annotations:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443},{"HTTP":80}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
@@ -64,42 +44,14 @@ alb
     alb.ingress.kubernetes.io/target-type: ip
     external-dns.alpha.kubernetes.io/ttl: "300"
     alb.ingress.kubernetes.io/healthcheck-path: /alive
-    alb.ingress.kubernetes.io/healthcheck-port: '8080'
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/scheme: internet-facing
-    
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":8040}]'
-    alb.ingress.kubernetes.io/backend-protocol: HTTPS
-    alb.ingress.kubernetes.io/target-type: ip
-    external-dns.alpha.kubernetes.io/ttl: "300"
-    alb.ingress.kubernetes.io/healthcheck-path: /alive
-    alb.ingress.kubernetes.io/healthcheck-port: '8080'
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/scheme: internal
-    
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":5002}]'
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/target-type: ip
-    external-dns.alpha.kubernetes.io/ttl: "300"
-    alb.ingress.kubernetes.io/healthcheck-path: /alive
-    alb.ingress.kubernetes.io/healthcheck-port: '8080'
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/scheme: internal
-    
   paths:
-    - path: /
-      pathType: Prefix
-      serviceName: nginx-service
-      port: 8040
-    - path: /
-      pathType: Prefix
-      serviceName: nginx-service
-      port: 8040
-    - path: /
-      pathType: Prefix
-      serviceName: nginx-service
-      port: 8050
-    
+  - path: /
+    pathType: Prefix
+    serviceName: companies-service
+    port: 8040
 
 image:
   repository: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/platform_nginx
@@ -112,7 +64,6 @@ resources:
   limits:
     cpu: "1024m"
     memory: "2Gi"
-  
 
 config:
   create: true
@@ -132,11 +83,11 @@ scaledObject:
   minReplicaCount: 2
   maxReplicaCount: 3
   triggers:
-    - type: cpu
-      metadata:
-        type: Utilization
-        value: "50"
-    - type: memory
-      metadata:
-        type: Utilization
-        value: "70"
+  - type: cpu
+    metadata:
+      type: Utilization
+      value: "50"
+  - type: memory
+    metadata:
+      type: Utilization
+      value: "70"
