@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: ngliveness-dev
+
+namespace: app
+
+resources:
+- ../../base
+- external-secret-patch.yaml
+
+configMapGenerator:
+- name: ngliveness-config
+  literals:
+  - AUDIT=true
+  - DISABLE_LOG_TO_FILE=true
+  - SETUP_RABBITMQ=true
+  - AWS_DEFAULT_REGION=eu-central-1
+  - SESSIONS_SCHEDULER_INTERVAL_SECONDS=20
+  - DEFAULT_COMPANY=63e353cbc81e405c6c692ffa
+  - GOOGLE_APPLICATION_CREDENTIALS=/app/auth/data.json
+  - EXTRA_REDIS_TTL_SECONDS=300
+  - TIMED_OUT_SESSIONS_COMPLETION_DELAY_SECONDS=10
+  - AUTH_DB_SCHEMA=eks_dev_authorization_375
+  - IDRND_URI=https://idrnd.dev-eks.internal-services:8443
+  - SSL_CERT_CHAIN_SECRET_NAME=dev-eks-internal-services-ssl-ca-crt
+  - DB_SCHEMA=dev_company
+
+commonLabels:
+  environment: dev

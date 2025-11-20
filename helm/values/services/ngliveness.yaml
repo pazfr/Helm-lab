@@ -1,0 +1,74 @@
+replicaCount: 2
+service:
+  name: ngliveness
+  port: 5009
+  targetPort: 5009
+  ports:
+  - name: 5009-tcp
+    port: 5009
+    targetPort: 5009
+    protocol: TCP
+  
+
+ingress:
+  internal: false
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    
+  paths:
+    - path: /
+      pathType: Prefix
+      serviceName: ngliveness-service
+      port: 5009
+    
+
+image:
+  repository: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/ng_liveness
+  tag: latest
+
+resources:
+  requests:
+    cpu: "1024m"
+    memory: "6Gi"
+  limits:
+    cpu: "2048m"
+    memory: "7Gi"
+  
+
+config:
+  create: true
+  name: ngliveness-config
+  data: {}
+
+secret:
+  create: false
+  name: ngliveness-secrets
+
+externalSecrets: []
+
+extraEnv:
+  - name: AUTH_URL
+    valueFrom:
+      configMapKeyRef:
+        name: shared-configmap
+        key: AUTH_URL
+  
+
+scaledObject:
+  enabled: true
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 2
+  maxReplicaCount: 3
+  triggers:
+    - type: cpu
+      metadata:
+        type: Utilization
+        value: "60"
+    - type: memory
+      metadata:
+        type: Utilization
+        value: "70"

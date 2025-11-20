@@ -1,0 +1,76 @@
+replicaCount: 1
+service:
+  name: ocr
+  port: 5040
+  targetPort: 5040
+  ports:
+  - name: 5040-tcp
+    port: 5040
+    targetPort: 5040
+    protocol: TCP
+  
+
+ingress:
+  internal: false
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    # alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.type=source_ip,stickiness.source_ip.duration_seconds=3600
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    
+  paths:
+    - path: /
+      pathType: Prefix
+      serviceName: ocr-service
+      port: 5040
+    
+
+image:
+  repository: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/ocr
+  tag: latest
+
+resources:
+  requests:
+    cpu: "1024m"
+    memory: "6Gi"
+  limits:
+    cpu: "2048m"
+    memory: "7Gi"
+  
+
+config:
+  create: true
+  name: ocr-config
+  data: {}
+
+secret:
+  create: false
+  name: ocr-secrets
+
+externalSecrets: []
+
+extraEnv:
+  - name: AUTH_URL
+    valueFrom:
+      configMapKeyRef:
+        name: shared-configmap
+        key: AUTH_URL
+  
+
+scaledObject:
+  enabled: true
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 1
+  triggers:
+    - type: cpu
+      metadata:
+        type: Utilization
+        value: "60"
+    - type: memory
+      metadata:
+        type: Utilization
+        value: "70"

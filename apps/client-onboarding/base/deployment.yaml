@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-onboarding
+  namespace: app
+  labels:
+    app: client-onboarding
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: client-onboarding
+  template:
+    metadata:
+      labels:
+        app: client-onboarding
+    spec:
+      serviceAccountName: app-services-sa
+      containers:
+      - name: client-onboarding
+        image: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/client-onboarding:latest
+        ports:
+        - name: 8000-tcp
+          containerPort: 8000
+          protocol: TCP
+        - name: 8050-tcp
+          containerPort: 8050
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "1024m"
+            memory: "1Gi"
+          limits:
+            cpu: "2048m"
+            memory: "2Gi"
+        envFrom:
+        - configMapRef:
+            name: client-onboarding-config
+        - secretRef:
+            name: client-onboarding-secrets
+        env:
+        - name: AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: shared-configmap
+              key: AUTH_URL

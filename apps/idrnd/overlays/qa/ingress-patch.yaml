@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: idrnd-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-internal
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-internal-alb
+    external-dns.alpha.kubernetes.io/hostname: idrnd.qa-eks.internal-services
+
+spec:
+  ingressClassName: alb
+  rules:
+  - host: idrnd.qa-eks.internal-services
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: idrnd-service
+            port:
+              number: 8443

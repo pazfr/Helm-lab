@@ -1,0 +1,84 @@
+# Global-ish defaults that can be overridden by env and service specific values
+env: dev
+namespace: app
+replicaCount: 1
+service:
+  name: example
+  port: 8080
+  targetPort: 8080
+  ports: []
+  type: ClusterIP
+  labels: {}
+
+image:
+  repository: example
+  tag: latest
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits: {}
+
+envVars: {}
+
+affinity: {}
+tolerations: []
+nodeSelector: {}
+
+serviceAccountName: app-services-sa
+
+config:
+  create: true
+  name: ""
+  data: {}
+
+secret:
+  create: false
+  name: ""
+  data: {}
+
+externalSecrets: []
+
+sharedConfigRef:
+  enabled: true
+  name: shared-configmap
+
+extraEnv: []
+extraEnvFrom: []
+
+serviceMonitor:
+  enabled: false
+
+ingress:
+  enabled: true
+  internal: false
+  host: ""
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  paths:
+  - path: /
+    pathType: Prefix
+    port: null
+
+domains:
+  internal: internal-services
+  public: public-services
+
+scaledObject:
+  enabled: false
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 1
+  triggers: []
+
+podAnnotations: {}
+podLabels: {}
+
+extraContainers: []
+volumes: []
+volumeMounts: []

@@ -1,0 +1,90 @@
+# apiVersion: kustomize.config.k8s.io/v1beta1
+# kind: Kustomization
+
+# metadata:
+#   name: companies-company1-dev
+
+# namespace: platform
+
+# namePrefix: company1-
+
+# resources:
+#   - ../../base
+#   - external-secret-patch.yaml
+
+# generatorOptions:
+#   disableNameSuffixHash: true
+
+# patches:
+# - target:
+#     kind: Deployment
+#     name: companies
+#   path: deployment-patch.yaml
+# - target:
+#     kind: Ingress
+#     name: companies-ingress
+#   path: ingress-patch.yaml
+# - target:
+#     kind: Service
+#     name: companies
+#   path: service-patch.yaml
+
+# - target:
+#     kind: ScaledObject
+#     name: companies-scaledobject
+#   path: scaledobject-patch.yaml
+
+# images:
+# - name: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/platform_nginx
+#   newTag: main_a3e4242_8
+# - name: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/core
+#   newTag: version_3.7.5_817f5e9_319
+# - name: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/gateway
+#   newTag: version_3.7.5_ab10265_76
+
+# configMapGenerator:
+# - name: common-config
+#   literals:
+#   - COMPANY_NAME=company1
+#   - ENV=dev
+# - name: core-config
+#   literals:
+#   - GATEWAY_URL=https://company1.dev-eks.internal-services:8040
+#   - SERVER_PORT=5002
+#   - TOKEN_PUBLIC_KEY_PATH=/keys/public_key_rsa.pem
+#   - TOKEN_PRIVATE_KEY_PATH=/keys/private_key_rsa.pem
+#   - S3_REGION_NAME=eu-central-1
+#   - LOGIN_URL=https://dev-eks-company1-console.purpleray.com/login
+#   - ALLOW_ALL_ORIGINS=true
+#   - PUBLIC_KEY_PATH=/keys/public_key.pem
+#   - SCANOVATE_OTP_SERVICE_URL=https://otp.dev-eks.internal-services:5000
+#   - DATABASE_SCHEMA=dev
+#   - SKIP_NFC_VERIFICATION=true
+#   - PRIVATE_KEY_PATH=/keys/private_key.pem
+# - name: gateway-config
+#   literals:
+#   - FACE_MATCH_URL=https://ngfacematch.dev-eks.internal-services:3000
+#   - SIGNED_RESULTS=true
+#   - AWS_DEFAULT_REGION=eu-central-1
+#   - CALLBACK_TIMEOUT=30
+#   - CORE_URL=http://localhost:5002
+#   - ENABLE_DOCS=true
+#   - SSL_CERT_CHAIN_SECRET_NAME=dev-eks-internal-services-ssl-ca-crt
+#   - ANALYTICS_EVENTS_IS_FIRE_EVENT=true
+#   - AUDIT_EVENTS_IS_FIRE_EVENT=true
+#   - X_COMPANY_ID=63e353cbc81e405c6c692ffa
+#   - CALLBACK_REQUEST_DATA_TYPE=string
+#   - CALLBACK_HEADER_CONTENT_TYPE=application/json
+#   - DB_SCHEMA=dev_company
+#   - OCR_URL=http://ocr.dev-eks.internal-services:5040
+#   - AUTH_URL=https://authorization.dev-eks.internal-services:5800
+#   - SERVER_BASE_URL=https://company1.dev-eks.internal-services:8040
+#   - AWS_REGION=eu-central-1
+#   - PORT=5008
+#   - AUTH_DB_SCHEMA=eks_dev_authorization_375
+#   - AUDIT_EVENTS_STREAM_NAME=dev_audit_events
+#   - ANALYTICS_EVENTS_STREAM_NAME=dev_audit_events
+#   - MAX_AUTH_REQUESTS_RETRIES=2
+#   - X_CLIENT_KEY=rjRob92RLdGDAyYH0MqzuUblez48gL
+#   - SETUP_MYSQL_DB=true
+#   - ENABLE_HTTPS=false

@@ -1,0 +1,49 @@
+image:
+  tag: version_3.7.5_0014951_32
+
+service:
+  labels:
+    version: "3.7.5"
+
+config:
+  data:
+    INJECTION_DETECTION_SERVER_URL: "https://liveness-injection-detection.qa-eks.internal-services:8443"
+    SSL_CERT_CHAIN_SECRET_NAME: "qa-internal-services-ssl-ca-crt"
+    MODE: "saas"
+    PRESENTATION_DETECTION_SERVER_URL: "https://liveness-presentation-detection.qa-eks.internal-services:8443"
+    AWS_DEFAULT_REGION: "eu-central-1"
+    ENABLE_ANALYTICS: "true"
+    KINESIS_STREAM_NAME: "test_purple_events"
+    IDENTITY_POOL_ID: "eu-central-1:6d48067d-753f-4c32-ae14-14b9a153985b"
+    AWS_REGION: "eu-central-1"
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-external
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
+    alb.ingress.kubernetes.io/healthcheck-path: /alive
+    alb.ingress.kubernetes.io/healthcheck-port: '5050'
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/5152bcf9-4464-4bb3-8953-014a10d654c5
+    
+
+externalSecrets:
+  - name: liveness-external-secret
+    secretStoreRef:
+      name: aws-secrets-manager
+      kind: ClusterSecretStore
+    refreshInterval: 5m
+    targetName: liveness-secrets
+    data:
+      - secretKey: JWT_SECRET_KEY
+        remoteRef:
+          key: OCR_JWT_SECRET_KEY
+      - secretKey: AUTH_CLIENT_ID
+        remoteRef:
+          key: LIVENESS_AUTH_V3_QA
+          property: AUTH_CLIENT_ID
+      - secretKey: AUTH_CLIENT_SECRET
+        remoteRef:
+          key: LIVENESS_AUTH_V3_QA
+          property: AUTH_CLIENT_SECRET
+  

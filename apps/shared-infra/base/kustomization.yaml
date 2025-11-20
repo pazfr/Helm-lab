@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: shared-infrastructure
+  annotations:
+    description: "Base shared infrastructure resources"
+
+resources:
+- namespace.yaml
+- aws-secret-manager-clustersecretstore.yaml
+- aws-parameter-store-clustersecretstore.yaml
+- ingress-nginx-alb.yaml
+
+commonLabels:
+  app: shared-infrastructure
+
+commonAnnotations:
+  managed-by: kustomize

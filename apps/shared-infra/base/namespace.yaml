@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app
+  labels:
+    app: app
+    component: application-services
+  annotations:
+    description: "Namespace for all application services"
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: platform
+  labels:
+    app: platform
+    component: platform-services
+  annotations:
+    description: "Namespace for all platform services (Companies)"

@@ -1,0 +1,71 @@
+replicaCount: 2
+service:
+  name: liveness-injection-detection
+  port: 8443
+  targetPort: 8443
+  ports:
+  - name: inj-8443-tcp
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+  
+
+ingress:
+  internal: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 8443}]'
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    alb.ingress.kubernetes.io/healthcheck-path: /api_version
+    alb.ingress.kubernetes.io/healthcheck-port: '8443'
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS
+    
+  paths:
+    - path: /
+      pathType: Prefix
+      serviceName: liveness-injection-detection-service
+      port: 8443
+    
+
+image:
+  repository: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/liveness_injection_detection
+  tag: iad-server-prod_2.4.1
+
+resources:
+  requests:
+    cpu: "2048m"
+    memory: "5Gi"
+  limits:
+    cpu: "4096m"
+    memory: "7Gi"
+  
+
+config:
+  create: true
+  name: liveness-injection-detection-config
+  data: {}
+
+secret:
+  create: false
+  name: liveness-injection-detection-secrets
+
+externalSecrets: []
+
+scaledObject:
+  enabled: true
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 2
+  maxReplicaCount: 3
+  triggers:
+    - type: cpu
+      metadata:
+        type: Utilization
+        value: "60"
+    - type: memory
+      metadata:
+        type: Utilization
+        value: "70"

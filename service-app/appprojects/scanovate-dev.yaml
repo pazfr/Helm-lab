@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: scanovate-dev
+  namespace: argocd
+  labels:
+    environment: dev
+    managed-by: argocd
+spec:
+  description: "Scanovate Development Environment"
+  
+  # Source repositories
+  sourceRepos:
+  - 'ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git'
+  
+  # Destination clusters and namespaces
+  destinations:
+  - namespace: '*'
+    server: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+  
+  # Allowed cluster resources
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  - group: 'external-secrets.io'
+    kind: ClusterSecretStore
+  
+  # Allowed namespaced resources
+  namespaceResourceWhitelist:
+  - group: ''
+    kind: ConfigMap
+  - group: ''
+    kind: Secret
+  - group: ''
+    kind: ServiceAccount
+  - group: 'apps'
+    kind: Deployment
+  - group: ''
+    kind: Service
+  - group: 'networking.k8s.io'
+    kind: Ingress
+  - group: 'external-secrets.io'
+    kind: ExternalSecret

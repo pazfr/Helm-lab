@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: liveness-qa375
+
+namespace: app
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - ../../base
+  - external-secret-patch.yaml
+
+patches:
+  - path: ingress-patch.yaml
+    target:
+      kind: Ingress
+      name: liveness-ingress
+
+configMapGenerator:
+  - name: liveness-config
+    literals:
+      - INJECTION_DETECTION_SERVER_URL=https://liveness-injection-detection.qa-eks.internal-services:8443
+      - SSL_CERT_CHAIN_SECRET_NAME=qa-internal-services-ssl-ca-crt
+      - MODE=saas
+      - PRESENTATION_DETECTION_SERVER_URL=https://liveness-presentation-detection.qa-eks.internal-services:8443
+      - AWS_DEFAULT_REGION=eu-central-1
+      - ENABLE_ANALYTICS=true
+      - KINESIS_STREAM_NAME=test_purple_events
+      - IDENTITY_POOL_ID=eu-central-1:6d48067d-753f-4c32-ae14-14b9a153985b
+      - AWS_REGION=eu-central-1
+
+images:
+  - name: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/liveness
+    newTag: version_3.7.5_0014951_32
+
+commonLabels:
+  environment: qa
+  version: "3.7.5"
+
+commonAnnotations:
+  environment: "qa"

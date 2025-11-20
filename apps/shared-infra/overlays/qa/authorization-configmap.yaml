@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-configmap
+  namespace: app
+data:
+  AUTH_URL: https://authorization.qa-eks.internal-services:5800

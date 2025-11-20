@@ -1,0 +1,63 @@
+image:
+  tag: 
+
+service:
+  labels:
+    version: ""
+
+config:
+  data:
+    AUDIT: "true"
+    DISABLE_LOG_TO_FILE: "true"
+    SETUP_RABBITMQ: "true"
+    AWS_DEFAULT_REGION: "eu-central-1"
+    SESSIONS_SCHEDULER_INTERVAL_SECONDS: "20"
+    DEFAULT_COMPANY: "63e353cbc81e405c6c692ffa"
+    GOOGLE_APPLICATION_CREDENTIALS: "/app/credentials/gcp_credentials.json"
+    EXTRA_REDIS_TTL_SECONDS: "300"
+    TIMED_OUT_SESSIONS_COMPLETION_DELAY_SECONDS: "10"
+    AUTH_DB_SCHEMA: "test_authorization_375"
+    IDRND_URI: "https://idrnd.qa-eks.internal-services:8443"
+    SSL_CERT_CHAIN_SECRET_NAME: "qa-internal-services-ssl-ca-crt"
+    DB_SCHEMA: "test_authorization_375"
+    KINESIS_STREAM_NAME: "test_purple_events"
+    IDENTITY_POOL_ID: "eu-central-1:6d48067d-753f-4c32-ae14-14b9a153985b"
+
+ingress:
+  annotations:
+    {}
+    
+
+externalSecrets:
+  - name: ngliveness-external-secret
+    secretStoreRef:
+      name: aws-secrets-manager
+      kind: ClusterSecretStore
+    refreshInterval: 1h
+    targetName: ngliveness-secrets
+    data:
+      - secretKey: CLIENT_ID
+        remoteRef:
+          key: LIVENESS_AUTH_CLIENT_TEST
+          property: LIVENESS_AUTH_CLIENT_ID
+      - secretKey: CLIENT_SECRET
+        remoteRef:
+          key: LIVENESS_AUTH_CLIENT_TEST
+          property: LIVENESS_AUTH_CLIENT_SECRET
+  - name: ngliveness-ssm-external-secret
+    secretStoreRef:
+      name: aws-parameter-store
+      kind: ClusterSecretStore
+    refreshInterval: 1h
+    targetName: ngliveness-secrets
+    data:
+      - secretKey: DB_URI
+        remoteRef:
+          key: DB_URI-authorization-qa
+      - secretKey: RABBIT_MQ_URI
+        remoteRef:
+          key: RABBIT_MQ_URI-qa
+      - secretKey: REDIS_URI
+        remoteRef:
+          key: REDIS_URI-qa
+  

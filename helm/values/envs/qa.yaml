@@ -1,0 +1,14 @@
+env: qa
+domains:
+  public: purpleray.com
+  internal: internal-services
+namespace: app
+sharedConfigRef:
+  enabled: true
+  name: shared-configmap
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-external
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/4a3a93b7-6a07-43f5-8d82-13ecd28be75e
+    external-dns.alpha.kubernetes.io/ttl: "300"

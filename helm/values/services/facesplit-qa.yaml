@@ -1,0 +1,72 @@
+image:
+  tag: version_3.7.5_0aa694b_37
+
+service:
+  labels:
+    version: "3.7.5"
+
+config:
+  data:
+    AWS_REGION: "eu-central-1"
+    AES_MOTHER_KEY_ID: "test_mother_aes_key"
+    PORT: "3030"
+    DEFAULT_ADMIN_DATA: "00"
+    AES_CBC_CHUNK_SIZE: "16000"
+    DATABASE_PORT: "3306"
+    HMAC_KEY_ID: "test_hmac_key"
+    HMAC_CONSTANT_PADDING_P2_HEX: "5049424142494F53504C4954"
+    ECDSA_PUBLIC_KEY_ID: "test_public_ecdsa_384_key"
+    S3_BUCKET_NAME: "pia-noise-qa"
+    ECDSA_PRIVATE_KEY_ID: "test_private_ecdsa_384_key"
+    DATABASE_TABLE_NAME: "part1"
+    USE_HSM_MOCK: "true"
+    ENABLE_HTTPS: "true"
+    DATABASE_SCHEMA: "face_split"
+    AES_CONSTANT_PADDING_P1_HEX: "000102030405060708090A0B"
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-external
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/4a3a93b7-6a07-43f5-8d82-13ecd28be75e
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    
+
+externalSecrets:
+  - name: facesplit-external-secret
+    secretStoreRef:
+      name: aws-secrets-manager
+      kind: ClusterSecretStore
+    refreshInterval: 5m
+    targetName: facesplit-secrets
+    data:
+      - secretKey: S3_ACCESS_KEY
+        remoteRef:
+          key: S3_KEYS
+          property: ACCESS_KEY
+      - secretKey: S3_SECRET_KEY
+        remoteRef:
+          key: S3_KEYS
+          property: SECRET_KEY
+      - secretKey: DATABASE_PASS
+        remoteRef:
+          key: rds_credentials_dev
+          property: password
+      - secretKey: DATABASE_URL
+        remoteRef:
+          key: rds_credentials_dev
+          property: QA_DATABASE_URL
+      - secretKey: DATABASE_USERNAME
+        remoteRef:
+          key: rds_credentials_dev
+          property: username
+      - secretKey: SSL_KEY
+        remoteRef:
+          key: qa-internal-services-ssl-key
+      - secretKey: SSL_CERT
+        remoteRef:
+          key: qa-internal-services-ssl-cert
+      - secretKey: SSL_KEY_PASSWORD
+        remoteRef:
+          key: qa-internal-services-ssl-key-password
+  

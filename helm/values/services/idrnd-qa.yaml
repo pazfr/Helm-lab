@@ -1,0 +1,16 @@
+image:
+  tag: idface-server-prod-1.49.2
+
+service:
+  labels:
+    version: "1.49.2"
+
+config:
+  data:
+    SERVER_SSL_ENABLED: "true"
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-internal
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-internal-alb
+    

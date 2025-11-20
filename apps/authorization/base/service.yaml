@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-service
+  namespace: app
+  labels:
+    app: authorization
+spec:
+  type: ClusterIP
+  ports:
+  - name: 5800-tcp
+    port: 5800
+    targetPort: 5800
+    protocol: TCP
+  selector:
+    app: authorization

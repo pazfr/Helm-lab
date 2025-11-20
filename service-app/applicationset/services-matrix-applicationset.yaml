@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: services-matrix
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+  - matrix:
+      generators:
+      # List of environments with their cluster URLs
+      - list:
+          elements:
+          - env: dev
+            cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+          # - env: qa
+          #   cluster: https://A1B2C3D4E5F60718293A4B5C6D7E8F90.gr7.eu-central-1.eks.amazonaws.com
+      # List of services (including shared infrastructure)
+      - list:
+          elements:
+          - name: shared-infra
+          - name: ocr
+          - name: authorization
+          - name: console
+          - name: client-onboarding
+          - name: video-statement
+          - name: facesplit
+          - name: ngfacematch
+          - name: otp
+          - name: idrnd
+          - name: idrnd-documents-liveness
+          - name: portal
+          - name: liveness
+          - name: liveness-presentation-detection
+          - name: liveness-injection-detection
+
+  template:
+    metadata:
+      name: '{{.name}}-{{.env}}'
+      labels:
+        app: '{{.name}}'
+        environment: '{{.env}}'
+        managed-by: argocd
+    spec:
+      project: 'scanovate-{{.env}}'
+      source:
+        repoURL: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+        targetRevision: main
+        path: 'apps/{{.name}}/overlays/{{.env}}'
+      destination:
+        server: '{{.cluster}}'
+        namespace: 'app'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - PrunePropagationPolicy=foreground
+        - PruneLast=true

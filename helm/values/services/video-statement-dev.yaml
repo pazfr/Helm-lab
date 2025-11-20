@@ -1,0 +1,41 @@
+image:
+  tag: version_3.7.5_ede1e94_109
+
+service:
+  labels:
+    version: "3.7.5"
+
+config:
+  data:
+    SSL_CERT_CHAIN_SECRET_NAME: "dev-eks-internal-services-ssl-ca-crt"
+    KINESIS_STREAM_NAME: "dev_purple_events"
+    MULTIKOL_API_URL: "https://api.multikol.co:9000/speech_to_text"
+    AWS_DEFAULT_REGION: "eu-central-1"
+    IDENTITY_POOL_ID: "eu-central-1:6d48067d-753f-4c32-ae14-14b9a153985b"
+    GOOGLE_APPLICATION_CREDENTIALS: "/app/credentials/gcp_credentials.json"
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: dev-external
+    alb.ingress.kubernetes.io/load-balancer-name: dev-eks-external-alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/4a3a93b7-6a07-43f5-8d82-13ecd28be75e
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    
+
+externalSecrets:
+  - name: video-statement-external-secret
+    secretStoreRef:
+      name: aws-secrets-manager
+      kind: ClusterSecretStore
+    refreshInterval: 5m
+    targetName: video-statement-secrets
+    data:
+      - secretKey: AUTH_CLIENT_ID
+        remoteRef:
+          key: dev_auth_stt_service_client
+          property: AUTH_CLIENT_ID
+      - secretKey: AUTH_CLIENT_SECRET
+        remoteRef:
+          key: dev_auth_stt_service_client
+          property: AUTH_CLIENT_SECRET
+  

@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: companies-scaledobject
+  namespace: platform
+spec:
+  scaleTargetRef:
+    name: companies
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 2
+  maxReplicaCount: 3
+  triggers:
+  - type: cpu
+    metadata:
+      type: Utilization
+      value: "50"
+  - type: memory
+    metadata:
+      type: Utilization
+      value: "70"

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal
+  namespace: app
+  labels:
+    app: portal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: portal
+  template:
+    metadata:
+      labels:
+        app: portal
+    spec:
+      serviceAccountName: app-services-sa
+      containers:
+      - name: portal
+        image: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/portal:latest
+        ports:
+        - name: 8000-tcp
+          containerPort: 8000
+          protocol: TCP
+        - name: 8020-tcp
+          containerPort: 8020
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "512m"
+            memory: "1Gi"
+          limits:
+            cpu: "1024m"
+            memory: "2Gi"
+        envFrom:
+        - configMapRef:
+            name: portal-config
+        - secretRef:
+            name: portal-secrets
+        env:
+        - name: AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: shared-configmap
+              key: AUTH_URL

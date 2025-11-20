@@ -1,0 +1,39 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: companies
+# spec:
+#   template:
+#     spec:
+#       containers:
+#       - name: nginx
+#         envFrom:
+#         - configMapRef:
+#             name: company1-common-config
+#         - secretRef:
+#             name: company1-companies-secrets
+#       - name: core
+#         envFrom:
+#         - configMapRef:
+#             name: company1-common-config
+#         - configMapRef:
+#             name: company1-core-config
+#         - secretRef:
+#             name: company1-companies-secrets
+#         resources:
+#           requests:
+#             cpu: "2048m"
+#             memory: "3072Mi"
+#       - name: gateway
+#         envFrom:
+#         - configMapRef:
+#             name: company1-common-config
+#         - configMapRef:
+#             name: company1-gateway-config
+#         - secretRef:
+#             name: company1-companies-secrets
+#         resources:
+#           requests:
+#             cpu: "1536m"
+#             memory: "2048Mi"
+

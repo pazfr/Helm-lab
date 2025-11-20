@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ingress-test
+  namespace: argocd
+spec:
+  goTemplate: true
+
+  generators:
+    - matrix:
+        generators:
+          # --- Environments and clusters ---
+          - list:
+              elements:
+                - env: dev
+                  cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+          # --- Services to deploy ---
+          - list:
+              elements:
+                - name: console
+                - name: client-onboarding
+                - name: portal
+
+  template:
+    metadata:
+      name: "{{ .name }}-{{ .env }}"
+      labels:
+        app: "{{ .name }}"
+        environment: "{{ .env }}"
+        managed-by: argocd
+
+    spec:
+      project: "scanovate-{{ .env }}"
+      source:
+        repoURL: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+        targetRevision: main
+        path: "apps/{{ .name }}/overlays/{{ .env }}"
+        kustomize:
+          patches:
+            - target:
+                kind: Ingress
+              patch: |
+                - op: add
+                  path: /spec/rules
+                  value:
+                    {{- $companies := list "company1" "company2" "company10" }}
+                    {{- range $company := $companies }}
+                    - host: {{ $.env }}-eks-{{ $company }}-{{ $.name }}.purpleray.com
+                    {{- end }}
+
+      destination:
+        server: "{{ .cluster }}"
+        namespace: app
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true

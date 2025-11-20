@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portal-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: dev-external
+    alb.ingress.kubernetes.io/load-balancer-name: dev-eks-external-alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/4a3a93b7-6a07-43f5-8d82-13ecd28be75e
+    external-dns.alpha.kubernetes.io/hostname: dev-eks-portal.purpleray.com
+spec:
+  ingressClassName: alb
+  rules:
+  - host: dev-eks-portal.purpleray.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: portal-service
+            port:
+              number: 8020

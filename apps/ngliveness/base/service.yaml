@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngliveness-service
+  namespace: app
+  labels:
+    app: ngliveness
+spec:
+  ports:
+  - port: 5009
+    targetPort: 5009
+    protocol: TCP
+    name: 5009-tcp
+  selector:
+    app: ngliveness

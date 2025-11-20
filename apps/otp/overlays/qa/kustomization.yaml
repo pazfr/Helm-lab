@@ -1,0 +1,51 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: otp-qa375
+
+namespace: app
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - ../../base
+  - external-secret-patch.yaml
+
+patches:
+  - path: ingress-patch.yaml
+    target:
+      kind: Ingress
+      name: otp-ingress
+
+configMapGenerator:
+  - name: otp-config
+    literals:
+      - CELLACT_COMPANY_NAME=scan1
+      - CELLACT_SENDER_NUMBER=972797401829
+      - KINESIS_STREAM_NAME=test_purple_events
+      - CELLACT_CALLBACK_WAIT_TIME_SECONDS=20
+      - AWS_DEFAULT_REGION=eu-central-1
+      - EXPIRED_MESSAGES_SCHEDULER_DELAY_SECONDS=30
+      - STORAGE_SCHEMA=test_otp
+      - TIME_TO_WAIT_BEFORE_CANCEL_MESSAGE_IN_SECONDS=30
+      - MESSAGE_TEMPLATE=קוד האימות שלכם הוא {code} אני חוזר {code} תקף ל{expiration_time} דקות
+      - CELLACT_DEFAULT_RATE=-3
+      - ENABLE_HTTPS=true
+      - CELLACT_API_URL=https://la.cellactpro.com/xml
+      - CELLACT_USER_NAME=scan1
+      - CELLACT_CALLBACK_URL=https://otp_service.btrust/callback
+      - CELLACT_PASSWORD=wvc4x5ad
+      - CELLACT_DEFAULT_VOICE=M
+
+images:
+- name: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/otp
+  newTag: version_3.7.5_266717f_25
+
+commonLabels:
+  environment: qa
+  version: "3.7.5"
+
+commonAnnotations:
+  environment: "qa"

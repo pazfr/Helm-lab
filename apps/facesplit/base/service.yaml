@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: facesplit-service
+  namespace: app
+  labels:
+    app: facesplit
+spec:
+  type: ClusterIP
+  ports:
+  - name: 3030-tcp
+    port: 3030
+    targetPort: 3030
+    protocol: TCP
+  selector:
+    app: facesplit

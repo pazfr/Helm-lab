@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: companies-matrix
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+  - matrix:
+      generators:
+      # Environments and clusters
+      - list:
+          elements:
+          - env: dev
+            cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+          # - env: qa
+          #   cluster: https://A1B2C3D4E5F60718293A4B5C6D7E8F90.gr7.eu-central-1.eks.amazonaws.com
+      # Companies per environment
+      - list:
+          elements:
+          # dev companies
+          # - company: company1
+          # env: dev
+          #  overlay: company1-dev
+          - company: company2
+            env: dev
+            overlay: company2-dev
+          ## qa companies
+          # - company: company5
+          #   env: qa
+          #   overlay: company5-qa
+
+  template:
+    metadata:
+      name: 'companies-{{.overlay}}'
+      labels:
+        app: 'companies'
+        company: '{{.company}}'
+        environment: '{{.env}}'
+        managed-by: argocd
+    spec:
+      project: 'scanovate-{{.env}}'
+      source:
+        repoURL: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+        targetRevision: main
+        path: 'apps/companies/overlays/{{.overlay}}'
+      destination:
+        server: '{{.cluster}}'
+        namespace: 'platform'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - PrunePropagationPolicy=foreground
+        - PruneLast=true
+
+

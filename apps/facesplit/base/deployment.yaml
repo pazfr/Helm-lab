@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facesplit
+  namespace: app
+  labels:
+    app: facesplit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: facesplit
+  template:
+    metadata:
+      labels:
+        app: facesplit
+    spec:
+      serviceAccountName: app-services-sa
+      containers:
+      - name: facesplit
+        image: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/pia_face:latest
+        ports:
+        - name: 3030-tcp
+          containerPort: 3030
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "1024m"
+            memory: "1Gi"
+          limits:
+            cpu: "2048m"
+            memory: "2Gi"
+        envFrom:
+        - configMapRef:
+            name: facesplit-config
+        - secretRef:
+            name: facesplit-secrets

@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: ngocr-dev
+
+namespace: app
+
+resources:
+- ../../base
+- external-secret-patch.yaml
+
+configMapGenerator:
+- name: ngocr-config
+  literals:
+  - EXTRA_REDIS_TTL_SECONDS=300
+  - SETUP_RABBITMQ=true
+  - AWS_DEFAULT_REGION=eu-central-1
+  - TIMED_OUT_SESSIONS_COMPLETION_DELAY_SECONDS=10
+  - SESSIONS_SCHEDULER_INTERVAL_SECONDS=20
+  - OMP_NUM_THREADS=1
+  - SSL_CERT_CHAIN_SECRET_NAME=dev-eks-internal-services-ssl-ca-crt
+  - AUTH_DB_SCHEMA=eks_dev_authorization_375
+  - REGULA_URL=https://vsts-regula-qa.ado-tech.com/api/process
+  - DB_SCHEMA=eks_dev_authorization_375
+
+commonLabels:
+  environment: dev

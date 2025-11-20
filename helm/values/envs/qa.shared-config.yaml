@@ -1,0 +1,4 @@
+name: shared-configmap
+namespace: app
+data:
+  AUTH_URL: https://authorization.qa-eks.internal-services:5800

@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: services-helm
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - env: dev
+                  cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+                - env: qa
+                # - env: staging
+                # - env: prod
+          - list:
+              elements:
+                - svc: authorization
+                - svc: client-onboarding
+                - svc: companies
+                - svc: console
+                - svc: dummy-app
+                - svc: facesplit
+                - svc: idrnd
+                - svc: idrnd-documents-liveness
+                - svc: liveness
+                - svc: liveness-injection-detection
+                - svc: liveness-presentation-detection
+                - svc: ngfacematch
+                - svc: ngliveness
+                - svc: ngocr
+                - svc: ocr
+                - svc: otp
+                - svc: portal
+                - svc: shared-infra
+                - svc: video-statement
+  template:
+    metadata:
+      name: "{{svc}}-{{env}}"
+      labels:
+        app: "{{svc}}"
+        environment: "{{env}}"
+        managed-by: argocd
+    spec:
+      project: services
+      source:
+        repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+        targetRevision: main
+        path: helm/charts/services/{{svc}}
+        helm:
+          valueFiles:
+            - "../../values/global/common.yaml"
+            - "../../values/apps/{{svc}}.yaml"
+            - "../../values/env/{{env}}.yaml"
+            - "../../values/env-app/{{env}}/{{svc}}.yaml"
+          ignoreMissingValueFiles: true
+      destination:
+        server: '{{ default "https://kubernetes.default.svc" .cluster }}'
+        namespace: app
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

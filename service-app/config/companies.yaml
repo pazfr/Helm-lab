@@ -1,0 +1,8 @@
+companies:
+  dev:
+    - company1
+    - company2
+    - company10
+  qa:
+    - company5
+    - company6

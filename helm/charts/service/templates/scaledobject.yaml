@@ -1,0 +1,18 @@
+{{- if .Values.scaledObject.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ printf "%s-scaledobject" (include "service.fullname" .) }}
+  namespace: {{ .Values.namespace }}
+  labels:
+{{ include "service.labels" . | indent 4 }}
+spec:
+  scaleTargetRef:
+    name: {{ include "service.fullname" . }}
+  pollingInterval: {{ .Values.scaledObject.pollingInterval }}
+  cooldownPeriod: {{ .Values.scaledObject.cooldownPeriod }}
+  minReplicaCount: {{ .Values.scaledObject.minReplicaCount }}
+  maxReplicaCount: {{ .Values.scaledObject.maxReplicaCount }}
+  triggers:
+{{ toYaml .Values.scaledObject.triggers | indent 4 }}
+{{- end }}

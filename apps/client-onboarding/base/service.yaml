@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-onboarding
+  namespace: app
+  labels:
+    app: client-onboarding
+spec:
+  type: ClusterIP
+  ports:
+  - name: 8000-tcp
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  - name: 8050-tcp
+    port: 8050
+    protocol: TCP
+    targetPort: 8050
+  selector:
+    app: client-onboarding

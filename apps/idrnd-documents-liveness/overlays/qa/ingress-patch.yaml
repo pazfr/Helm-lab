@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: idrnd-documents-liveness-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-internal
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-internal-alb
+    external-dns.alpha.kubernetes.io/hostname: idrnd-documents-liveness.qa-eks.internal-services
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/5152bcf9-4464-4bb3-8953-014a10d654c5
+
+spec:
+  ingressClassName: alb
+  rules:
+  - host: idrnd-documents-liveness.qa-eks.internal-services
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: idrnd-documents-liveness-service
+            port:
+              number: 8443

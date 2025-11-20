@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: idrnd-documents-liveness-scaledobject
+  namespace: app
+spec:
+  scaleTargetRef:
+    name: idrnd-documents-liveness
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 1
+  triggers:
+  - type: cpu
+    metadata:
+      type: Utilization
+      value: "60"
+  - type: memory
+    metadata:
+      type: Utilization
+      value: "70"

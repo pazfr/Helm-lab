@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: authorization-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: dev-internal
+    external-dns.alpha.kubernetes.io/hostname: authorization.dev-eks.internal-services
+    alb.ingress.kubernetes.io/load-balancer-name: dev-eks-internal-alb
+
+spec:
+  rules:
+  - host: authorization.dev-eks.internal-services
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: authorization-service
+            port:
+              number: 5800

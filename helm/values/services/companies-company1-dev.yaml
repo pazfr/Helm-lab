@@ -1,0 +1,23 @@
+image:
+  tag: 
+
+service:
+  labels:
+    version: ""
+
+config:
+  data:
+    {}
+
+ingress:
+  annotations:
+    {}
+    
+
+externalSecrets:
+  - name: null
+    secretStoreRef: null
+    refreshInterval: null
+    targetName: null
+    data: null
+  

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idrnd-documents-liveness
+  namespace: app
+  labels:
+    app: idrnd-documents-liveness
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: idrnd-documents-liveness
+  template:
+    metadata:
+      labels:
+        app: idrnd-documents-liveness
+    spec:
+      serviceAccountName: app-services-sa
+      containers:
+      - name: idrnd-documents-liveness
+        image: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/idrnd_document_liveness:latest
+        ports:
+        - name: 8443-tcp
+          containerPort: 8443
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "1024m"
+            memory: "7Gi"
+          limits:
+            cpu: "3600m"
+            memory: "10Gi"
+        envFrom:
+        - configMapRef:
+            name: idrnd-documents-liveness-config

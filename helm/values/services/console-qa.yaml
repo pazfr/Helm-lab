@@ -1,0 +1,66 @@
+image:
+  tag: version_3.7.5_008e4cf_488
+
+service:
+  labels:
+    version: "3.7.5"
+
+config:
+  data:
+    CAPTCHA_SOLVED_DELAY: "250"
+    PYTHONPATH: "server"
+    REQUEST_TIMEOUT: "300"
+    AWS_REGION: "eu-central-1"
+    ENABLE_DOCS: "True"
+    CAPTCHA_AFTER_FAILED_LOGINS: "3"
+    CAPTCHA_DOMAINS: "purpleray.com"
+    SSL_CERT_CHAIN_SECRET_NAME: "qa-internal-services-ssl-ca-crt"
+    CAPTCHA_ENABLED: "1"
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-external
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/4a3a93b7-6a07-43f5-8d82-13ecd28be75e
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    
+
+externalSecrets:
+  - name: console-external-secret
+    secretStoreRef:
+      name: aws-secrets-manager
+      kind: ClusterSecretStore
+    refreshInterval: 5m
+    targetName: console-secrets
+    data:
+      - secretKey: CAPTCHA_JS_SCRIPT
+        remoteRef:
+          key: QA_CAPTCHA_FRONTED
+          property: CAPTCHA_JS_SCRIPT
+      - secretKey: CAPTCHA_API_KEY
+        remoteRef:
+          key: QA_CAPTCHA_FRONTED
+          property: CONSOLE_CAPTCHA_API_KEY
+      - secretKey: CLIENT_ID
+        remoteRef:
+          key: test_frontend_secrets
+          property: CONSOLE_CLIENT_ID
+      - secretKey: CLIENT_SECRET
+        remoteRef:
+          key: test_frontend_secrets
+          property: CONSOLE_CLIENT_SECRET
+      - secretKey: FERNET_KEY
+        remoteRef:
+          key: test_frontend_secrets
+          property: FERNET_KEY
+  - name: console-ssm-external-secret
+    secretStoreRef:
+      name: aws-parameter-store
+      kind: ClusterSecretStore
+    refreshInterval: 5m
+    targetName: console-secrets
+    data:
+      - secretKey: MAINTENANCE_KEY
+        remoteRef:
+          key: MAINTENANCE_KEY-qa-v35
+  

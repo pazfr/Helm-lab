@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: liveness-presentation-detection-dev
+
+namespace: app
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+- ../../base
+- external-secret-patch.yaml
+
+patches:
+- path: ingress-patch.yaml
+  target:
+    kind: Ingress
+    name: liveness-presentation-detection-ingress
+
+configMapGenerator:
+- name: liveness-presentation-detection-config
+  literals:
+  - SERVER_ALLOW_CORS=true
+  - SERVER_SSL_ENABLED=true
+
+images:
+- name: 495947449196.dkr.ecr.eu-central-1.amazonaws.com/liveness_presentation_detection
+  newTag: idface-server-prod-1.49.2
+
+commonLabels:
+  environment: dev
+
+commonAnnotations:
+  environment: "development"

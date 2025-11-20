@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: liveness-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: qa-external
+    alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
+    alb.ingress.kubernetes.io/healthcheck-path: /alive
+    alb.ingress.kubernetes.io/healthcheck-port: '5050'
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    external-dns.alpha.kubernetes.io/hostname: qa-eks-liveness.purpleray.com
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/5152bcf9-4464-4bb3-8953-014a10d654c5
+spec:
+  ingressClassName: alb
+  rules:
+  - host: qa-eks-liveness.purpleray.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: liveness-service
+            port:
+              number: 5050
