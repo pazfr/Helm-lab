@@ -1,8 +1,4 @@
 env: dev
-domains:
-  public: purpleray.com
-  internal: internal-services
-namespace: app
 sharedConfigRef:
   enabled: true
   name: shared-configmap

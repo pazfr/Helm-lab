@@ -1,3 +1,6 @@
+
+replicaCount: 2
+
 image:
   tag: main_a3e4242_8
 

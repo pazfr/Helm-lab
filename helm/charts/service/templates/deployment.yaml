@@ -23,10 +23,6 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
-{{- with .Values.image.pullSecrets }}
-      imagePullSecrets:
-{{ toYaml . | indent 8 }}
-{{- end }}
       containers:
       - name: {{ include "service.fullname" . }}
         image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}

@@ -1,7 +1,6 @@
 domains:
   internal: internal-services
   public: purpleray.com
-env: dev
 namespace: app
 serviceAccountName: app-services-sa
 sharedConfigRef:
