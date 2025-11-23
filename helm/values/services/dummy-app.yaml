@@ -1,0 +1,62 @@
+replicaCount: 1
+
+service:
+  name: dummy-app
+  port: 8080
+  targetPort: 8080
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+
+ingress:
+  internal: false
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    external-dns.alpha.kubernetes.io/ttl: "60"
+  paths:
+  - path: /
+    pathType: Prefix
+    serviceName: dummy-app-service
+    port: 8080
+
+image:
+  repository: public.ecr.aws/docker/library/nginx
+  tag:
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+
+config:
+  create: true
+  name: dummy-app-config
+  data:
+    APP_MESSAGE: "hello from dummy-app"
+
+secret:
+  create: false
+  name: dummy-app-secrets
+
+externalSecrets: []
+
+extraEnv:
+  - name: APP_MESSAGE
+    valueFrom:
+      configMapKeyRef:
+        name: dummy-app-config
+        key: APP_MESSAGE
+  - name: SHARED_DUMMY_MESSAGE
+    valueFrom:
+      configMapKeyRef:
+        name: shared-configmap
+        key: DUMMY_MESSAGE

@@ -1,0 +1,20 @@
+{{- if .Values.sharedConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.sharedConfig.name }}
+  namespace: {{ .Values.sharedConfig.namespace }}
+  labels:
+    managed-by: helm
+{{- with .Values.sharedConfig.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.sharedConfig.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+{{- range $k, $v := .Values.sharedConfig.data }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+{{- end }}

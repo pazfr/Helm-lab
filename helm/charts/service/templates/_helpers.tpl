@@ -31,7 +31,10 @@ environment: {{ .Values.env | quote }}
 {{- if .Values.ingress.host -}}
 {{ .Values.ingress.host }}
 {{- else -}}
-{{- $domain := ternary .Values.domains.internal .Values.domains.public .Values.ingress.internal -}}
-{{ printf "%s.%s-eks.%s" .Values.service.name .Values.env $domain }}
+{{- if .Values.ingress.internal -}}
+{{ printf "%s.%s-eks.%s" .Values.service.name .Values.env .Values.domains.internal }}
+{{- else -}}
+{{ printf "%s.%s" .Values.service.name .Values.domains.public }}
+{{- end -}}
 {{- end -}}
 {{- end -}}

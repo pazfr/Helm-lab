@@ -1,0 +1,19 @@
+namespaces:
+  - name: app
+    labels:
+      component: application-services
+    annotations:
+      description: "Namespace for all application services"
+  - name: platform
+    labels:
+      component: platform-services
+    annotations:
+      description: "Namespace for all platform services (Companies)"
+
+sharedConfig:
+  enabled: true
+  name: shared-configmap
+  namespace: app
+  labels: {}
+  annotations: {}
+  data: {}

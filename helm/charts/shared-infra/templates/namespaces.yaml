@@ -1,0 +1,16 @@
+{{- range .Values.namespaces }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .name }}
+  labels:
+    managed-by: helm
+{{- with .labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+---
+{{- end }}

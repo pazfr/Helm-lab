@@ -42,19 +42,25 @@ spec:
         app: "{{svc}}"
         environment: "{{env}}"
         managed-by: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: '{{ if eq svc "shared-infra" }}-1{{ else }}0{{ end }}'
     spec:
       project: services
       source:
         repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
         targetRevision: main
-        path: helm/charts/services/{{svc}}
+        path: {{ if eq svc "shared-infra" }}helm/charts/shared-infra{{ else }}helm/charts/service{{ end }}
         helm:
           valueFiles:
+{{- if eq svc "shared-infra" }}
+            - "../../values/envs/{{env}}.shared-config.yaml"
+{{- else }}
             - "../../values/global.yaml"
             - "../../values/envs/{{env}}.yaml"
             - "../../values/services/{{svc}}.yaml"
             - "../../values/services/{{svc}}-{{env}}.yaml"
-          ignoreMissingValueFiles: true
+{{- end }}
+          ignoreMissingValueFiles: {{ if eq svc "shared-infra" }}false{{ else }}true{{ end }}
       destination:
         server: '{{ default "https://kubernetes.default.svc" .cluster }}'
         namespace: app

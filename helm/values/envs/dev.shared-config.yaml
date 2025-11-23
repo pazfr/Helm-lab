@@ -1,5 +1,6 @@
-name: shared-configmap
-namespace: app
-data:
-  AUTH_URL: https://authorization.dev-eks.internal-services:5800
-  MONGODB_URI: mongodb://shared-mongodb.dev-eks.svc.cluster.local:27017
+sharedConfig:
+  name: shared-configmap
+  namespace: app
+  data:
+    AUTH_URL: https://authorization.dev-eks.internal-services:5800
+    MONGODB_URI: mongodb://shared-mongodb.dev-eks.svc.cluster.local:27017

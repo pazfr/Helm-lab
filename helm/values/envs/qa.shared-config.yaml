@@ -1,4 +1,6 @@
-name: shared-configmap
-namespace: app
-data:
-  AUTH_URL: https://authorization.qa-eks.internal-services:5800
+sharedConfig:
+  name: shared-configmap
+  namespace: app
+  data:
+    AUTH_URL: https://authorization.qa-eks.internal-services:5800
+    DUMMY_MESSAGE: "hello from shared-config (qa)"

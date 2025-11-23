@@ -8,7 +8,7 @@ This directory contains ArgoCD ApplicationSets for managing service deployments 
 service-app/
 ├── applicationset/
 │   ├── services-matrix-applicationset.yaml    # Matrix generator for services
-│   └── shared-infra-applicationset.yaml       # Shared infrastructure
+│   └── services-helm-applicationset.yaml      # Helm-based services & shared infra (per-service chart and shared-infra chart)
 ├── kustomization.yaml                         # Kustomize configuration
 └── README.md                                  # This file
 ```
@@ -29,17 +29,14 @@ This ApplicationSet uses a matrix generator to create applications for multiple 
 - `service-b-dev`, `service-b-qa`, `service-b-staging`, `service-b-production`
 - ... and so on for all services
 
-### 2. Shared Infrastructure ApplicationSet
+### 2. Helm Services & Shared Infra ApplicationSet
 
-**File**: `applicationset/shared-infra-applicationset.yaml`
+**File**: `applicationset/services-helm-applicationset.yaml`
 
-This ApplicationSet deploys shared infrastructure resources across environments.
+This ApplicationSet deploys both per-service Helm releases and the shared infrastructure (namespaces + shared-config ConfigMap). The shared-infra release uses `helm/charts/shared-infra` with env-specific values (`helm/values/envs/<env>.shared-config.yaml`).
 
-**Generated Applications**:
-- `shared-infra-dev`
-- `shared-infra-qa`
-- `shared-infra-staging`
-- `shared-infra-production`
+**Generated Applications** (current env list):
+- `shared-infra-dev`, `shared-infra-qa`
 
 ## Repository Configuration
 
