@@ -44,7 +44,7 @@ spec:
     spec:
       project: "scanovate-{{.env}}"
       source:
-        repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+        repoURL: https://github.com/pazfr/Helm-lab.git
         targetRevision: main
         path: '{{ if eq .svc "shared-infra" }}helm/charts/shared-infra{{ else }}helm/charts/service{{ end }}'
         helm:

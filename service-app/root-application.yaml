@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+    repoURL: https://github.com/pazfr/Helm-lab.git
     targetRevision: main
     path: service-app
   destination:

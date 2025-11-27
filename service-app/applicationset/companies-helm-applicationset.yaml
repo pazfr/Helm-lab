@@ -18,7 +18,7 @@ spec:
                       # - env: qa
                       #   cluster: https://A1B2C3D4E5F60718293A4B5C6D7E8F90.gr7.eu-central-1.eks.amazonaws.com
                 - git:
-                    repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+                    repoURL: https://github.com/pazfr/Helm-lab.git
                     revision: main
                     files:
                       - path: config/companies.yaml
@@ -42,7 +42,7 @@ spec:
     spec:
       project: services
       source:
-        repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+        repoURL: https://github.com/pazfr/Helm-lab.git
         targetRevision: main
         path: helm/charts/service
         helm:

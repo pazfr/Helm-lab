@@ -47,7 +47,7 @@ This ApplicationSet deploys per-company instances of the `companies` service and
 
 ## Repository Configuration
 
-**Repository**: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+**Repository**: https://github.com/pazfr/Helm-lab.git
 **Branch**: main
 
 ## Usage

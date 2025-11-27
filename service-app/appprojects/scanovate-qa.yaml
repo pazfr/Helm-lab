@@ -11,7 +11,7 @@ spec:
 
   sourceRepos:
   - 'ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git'
-  - 'https://bitbucket.org/scanovate/eks-argocd-deployment.git'
+  - 'https://github.com/pazfr/Helm-lab.git'
 
   destinations:
   - namespace: '*'
