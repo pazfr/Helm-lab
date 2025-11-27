@@ -68,6 +68,13 @@ domains:
   internal: internal-services
   public: public-services
 
+traefik:
+  enabled: false
+  entryPoints:
+    - web
+  stickyCookieName: Session-ID
+  routerMiddlewares: []
+
 scaledObject:
   enabled: false
   pollingInterval: 30

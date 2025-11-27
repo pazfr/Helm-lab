@@ -1,0 +1,24 @@
+{{- if .Values.traefikAlb.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-alb-entry
+  namespace: {{ .Values.traefikAlb.namespace | default "traefik-system" }}
+  annotations:
+{{- range $k, $v := .Values.traefikAlb.annotations }}
+    {{ $k }}: {{ $v | quote }}
+{{- end }}
+spec:
+  ingressClassName: {{ .Values.traefikAlb.ingressClassName | default "alb" }}
+  rules:
+  - host: {{ .Values.traefikAlb.host | required "traefikAlb.host is required when traefikAlb.enabled=true" }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.traefikAlb.service.name | default "traefik" }}
+            port:
+              number: {{ .Values.traefikAlb.service.port | default 80 }}
+{{- end }}
