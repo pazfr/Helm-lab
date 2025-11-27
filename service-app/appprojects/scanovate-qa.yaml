@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: scanovate-qa
+  namespace: argocd
+  labels:
+    environment: qa
+    managed-by: argocd
+spec:
+  description: "Scanovate QA Environment"
+
+  sourceRepos:
+  - 'ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git'
+  - 'https://bitbucket.org/scanovate/eks-argocd-deployment.git'
+
+  destinations:
+  - namespace: '*'
+    # server: https://EDD3DC524CE31643A25033C9775AA6DF.gr7.eu-central-1.eks.amazonaws.com
+    server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  - group: 'external-secrets.io'
+    kind: ClusterSecretStore
+
+  namespaceResourceWhitelist:
+  - group: ''
+    kind: ConfigMap
+  - group: ''
+    kind: Secret
+  - group: ''
+    kind: ServiceAccount
+  - group: 'apps'
+    kind: Deployment
+  - group: ''
+    kind: Service
+  - group: 'networking.k8s.io'
+    kind: Ingress
+  - group: 'external-secrets.io'
+    kind: ExternalSecret

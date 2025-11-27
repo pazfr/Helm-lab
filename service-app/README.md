@@ -8,6 +8,7 @@ This directory contains ArgoCD ApplicationSets for managing service deployments 
 service-app/
 ├── applicationset/
 │   ├── services-matrix-applicationset.yaml    # Matrix generator for services
+│   ├── companies-helm-applicationset.yaml     # Helm-based companies (per-company values)
 │   └── services-helm-applicationset.yaml      # Helm-based services & shared infra (per-service chart and shared-infra chart)
 ├── kustomization.yaml                         # Kustomize configuration
 └── README.md                                  # This file
@@ -37,6 +38,12 @@ This ApplicationSet deploys both per-service Helm releases and the shared infras
 
 **Generated Applications** (current env list):
 - `shared-infra-dev`, `shared-infra-qa`
+
+### 3. Helm Companies ApplicationSet
+
+**File**: `applicationset/companies-helm-applicationset.yaml`
+
+This ApplicationSet deploys per-company instances of the `companies` service and related services (console, client-onboarding, portal) via the shared service chart. Companies are sourced from `service-app/config/companies.yaml`; value files include service/env defaults plus optional company overrides (`helm/values/services/<svc>-<company>-<env>.yaml`). Hosts are templated as `<env>-eks-<company>-<svc>.purpleray.com`, and service names are suffixed with the company to avoid collisions.
 
 ## Repository Configuration
 

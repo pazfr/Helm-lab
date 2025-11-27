@@ -7,7 +7,9 @@ metadata:
     description: "ArgoCD ApplicationSet for service deployments"
 
 resources:
-- applicationset/services-matrix-applicationset.yaml
+# - applicationset/services-matrix-applicationset.yaml
+# - applicationset/companies-helm-applicationset.yaml
+- applicationset/services-helm-applicationset.yaml
 
 commonLabels:
   app.kubernetes.io/name: service-applications

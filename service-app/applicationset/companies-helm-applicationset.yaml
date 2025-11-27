@@ -1,0 +1,70 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: companies-helm
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - merge:
+              mergeKeys:
+                - env
+              generators:
+                - list:
+                    elements:
+                      - env: dev
+                        cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+                      # - env: qa
+                      #   cluster: https://A1B2C3D4E5F60718293A4B5C6D7E8F90.gr7.eu-central-1.eks.amazonaws.com
+                - git:
+                    repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+                    revision: main
+                    files:
+                      - path: config/companies.yaml
+                        jqPathExpressions:
+                          - '.companies | to_entries[] | {env: .key, company: .value[]}'
+          - list:
+              elements:
+                - svc: companies
+                - svc: console
+                - svc: client-onboarding
+                - svc: portal
+
+  template:
+    metadata:
+      name: "{{svc}}-{{company}}-{{env}}"
+      labels:
+        app: "{{svc}}"
+        company: "{{company}}"
+        environment: "{{env}}"
+        managed-by: argocd
+    spec:
+      project: services
+      source:
+        repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
+        targetRevision: main
+        path: helm/charts/service
+        helm:
+          valueFiles:
+            - "../../values/global.yaml"
+            - "../../values/envs/{{env}}.yaml"
+            - "../../values/services/{{svc}}.yaml"
+            - "../../values/services/{{svc}}-{{env}}.yaml"
+            - "../../values/services/{{svc}}-{{company}}-{{env}}.yaml"
+          ignoreMissingValueFiles: true
+          parameters:
+            - name: service.name
+              value: "{{svc}}-{{company}}"
+            - name: ingress.host
+              value: "{{env}}-eks-{{company}}-{{svc}}.purpleray.com"
+      destination:
+        server: '{{ default "https://kubernetes.default.svc" .cluster }}'
+        namespace: platform
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

@@ -7,11 +7,11 @@ metadata:
     description: "ArgoCD Projects for Scanovate environments"
 
 resources:
-- scanovate-dev.yaml
+# - scanovate-dev.yaml
 - scanovate-qa.yaml
-- scanovate-staging.yaml
-- scanovate-production.yaml
-- scanovate-repository.yaml
+# - scanovate-staging.yaml
+# - scanovate-production.yaml
+# - scanovate-repository.yaml
 
 commonLabels:
   app.kubernetes.io/name: scanovate-projects

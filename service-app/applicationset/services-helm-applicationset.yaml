@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: services-helm
+  namespace: argocd
 spec:
   goTemplate: true
   generators:
@@ -9,58 +10,51 @@ spec:
         generators:
           - list:
               elements:
-                - env: dev
-                  cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
                 - env: qa
-                # - env: staging
-                # - env: prod
+                  # cluster: https://EDD3DC524CE31643A25033C9775AA6DF.gr7.eu-central-1.eks.amazonaws.com
           - list:
               elements:
-                - svc: authorization
-                - svc: client-onboarding
-                - svc: companies
-                - svc: console
+                # - svc: authorization
+                # - svc: client-onboarding
+                # - svc: console
                 - svc: dummy-app
-                - svc: facesplit
-                - svc: idrnd
-                - svc: idrnd-documents-liveness
-                - svc: liveness
-                - svc: liveness-injection-detection
-                - svc: liveness-presentation-detection
-                - svc: ngfacematch
-                - svc: ngliveness
-                - svc: ngocr
-                - svc: ocr
-                - svc: otp
-                - svc: portal
+                # - svc: facesplit
+                # - svc: idrnd
+                # - svc: idrnd-documents-liveness
+                # - svc: liveness
+                # - svc: liveness-injection-detection
+                # - svc: liveness-presentation-detection
+                # - svc: ngfacematch
+                # - svc: ngliveness
+                # - svc: ngocr
+                # - svc: ocr
+                # - svc: otp
+                # - svc: portal
                 - svc: shared-infra
-                - svc: video-statement
+                # - svc: video-statement
   template:
     metadata:
-      name: "{{svc}}-{{env}}"
+      name: "{{.svc}}-{{.env}}"
       labels:
-        app: "{{svc}}"
-        environment: "{{env}}"
+        app: "{{.svc}}"
+        environment: "{{.env}}"
         managed-by: argocd
       annotations:
-        argocd.argoproj.io/sync-wave: '{{ if eq svc "shared-infra" }}-1{{ else }}0{{ end }}'
+        argocd.argoproj.io/sync-wave: '{{ if eq .svc "shared-infra" }}-1{{ else }}0{{ end }}'
     spec:
-      project: services
+      project: "scanovate-{{.env}}"
       source:
         repoURL: https://bitbucket.org/scanovate/eks-argocd-deployment.git
         targetRevision: main
-        path: {{ if eq svc "shared-infra" }}helm/charts/shared-infra{{ else }}helm/charts/service{{ end }}
+        path: '{{ if eq .svc "shared-infra" }}helm/charts/shared-infra{{ else }}helm/charts/service{{ end }}'
         helm:
           valueFiles:
-{{- if eq svc "shared-infra" }}
-            - "../../values/envs/{{env}}.shared-config.yaml"
-{{- else }}
             - "../../values/global.yaml"
-            - "../../values/envs/{{env}}.yaml"
-            - "../../values/services/{{svc}}.yaml"
-            - "../../values/services/{{svc}}-{{env}}.yaml"
-{{- end }}
-          ignoreMissingValueFiles: {{ if eq svc "shared-infra" }}false{{ else }}true{{ end }}
+            - "../../values/envs/{{.env}}.yaml"
+            - "../../values/envs/{{.env}}.shared-config.yaml"
+            - "../../values/services/{{.svc}}.yaml"
+            - "../../values/services/{{.svc}}-{{.env}}.yaml"
+          ignoreMissingValueFiles: true
       destination:
         server: '{{ default "https://kubernetes.default.svc" .cluster }}'
         namespace: app

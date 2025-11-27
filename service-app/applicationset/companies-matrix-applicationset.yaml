@@ -11,9 +11,9 @@ spec:
       # Environments and clusters
       - list:
           elements:
-          - env: dev
-            cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
-          # - env: qa
+          # - env: dev
+          #   cluster: https://DD16D8547C410C29A4C51DE16015026B.gr7.eu-central-1.eks.amazonaws.com
+          - env: qa
           #   cluster: https://A1B2C3D4E5F60718293A4B5C6D7E8F90.gr7.eu-central-1.eks.amazonaws.com
       # Companies per environment
       - list:
