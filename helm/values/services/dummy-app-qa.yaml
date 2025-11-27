@@ -14,6 +14,7 @@ ingress:
   annotations:
     alb.ingress.kubernetes.io/group.name: qa-external
     alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]' # force HTTP-only so no TLS certificate is required
     alb.ingress.kubernetes.io/healthcheck-path: /healthz
     alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
