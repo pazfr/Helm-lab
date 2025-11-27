@@ -9,7 +9,7 @@ metadata:
 resources:
 # - applicationset/services-matrix-applicationset.yaml
 # - applicationset/companies-helm-applicationset.yaml
-- appprojects/scnovate-qa.yaml
+- appprojects/scanovate-qa.yaml
 - applicationset/services-helm-applicationset.yaml
 
 commonLabels:
