@@ -38,7 +38,7 @@ spec:
 
           # --- companies list from git file ---
           - git:
-              repoURL: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+              repoURL: ssh://git@github.com:pazfr/Helm-lab.git
               revision: main
               files:
                 - path: config/companies.yaml
@@ -54,7 +54,7 @@ spec:
     spec:
       project: "scanovate-{{ .env }}"
       source:
-        repoURL: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+        repoURL: ssh://git@github.com:pazfr/Helm-lab.git
         targetRevision: main
         path: "apps/{{ .name }}/overlays/{{ .env }}"
 

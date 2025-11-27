@@ -41,7 +41,7 @@ spec:
     spec:
       project: 'scanovate-{{.env}}'
       source:
-        repoURL: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+        repoURL: ssh://git@github.com:pazfr/Helm-lab.git
         targetRevision: main
         path: 'apps/companies/overlays/{{.overlay}}'
       destination:

@@ -8,6 +8,6 @@ metadata:
 type: Opaque
 stringData:
   type: git
-  url: ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git
+  url: ssh://git@github.com:pazfr/Helm-lab.git
   sshPrivateKey: |
 

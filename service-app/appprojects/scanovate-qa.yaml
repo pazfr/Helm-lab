@@ -10,7 +10,7 @@ spec:
   description: "Scanovate QA Environment"
 
   sourceRepos:
-  - 'ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git'
+  - 'ssh://git@github.com:pazfr/Helm-lab.git'
   - 'https://github.com/pazfr/Helm-lab.git'
 
   destinations:

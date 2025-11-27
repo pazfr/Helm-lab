@@ -11,7 +11,7 @@ spec:
   
   # Source repositories
   sourceRepos:
-  - 'ssh://git@bitbucket.org/scanovate/eks-argocd-deployment.git'
+  - 'ssh://git@github.com:pazfr/Helm-lab.git'
   
   # Destination clusters and namespaces
   destinations:
