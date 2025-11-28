@@ -39,3 +39,5 @@ spec:
     kind: Ingress
   - group: 'external-secrets.io'
     kind: ExternalSecret
+  - group: 'traefik.io'
+    kind: IngressRoute
