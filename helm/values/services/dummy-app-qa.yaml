@@ -33,9 +33,8 @@ traefikAlb:
     alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    alb.ingress.kubernetes.io/healthcheck-path: /ping
-    alb.ingress.kubernetes.io/healthcheck-port: "80"
-    alb.ingress.kubernetes.io/success-codes: "200-299"
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/success-codes: "200-499" # mark 404 from Traefik as healthy
 
 traefik:
   enabled: true
