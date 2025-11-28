@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: traefik-alb-entry
+  name: {{ printf "%s-traefik-alb" (include "service.fullname" .) }}
   namespace: {{ .Values.traefikAlb.namespace | default "traefik-system" }}
   annotations:
 {{- range $k, $v := .Values.traefikAlb.annotations }}

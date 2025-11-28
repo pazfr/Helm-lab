@@ -75,6 +75,20 @@ traefik:
   stickyCookieName: Session-ID
   routerMiddlewares: []
 
+traefikAlb:
+  enabled: false
+  namespace: traefik-system
+  ingressClassName: alb
+  host: ""
+  service:
+    name: traefik
+    port: 80
+  annotations:
+    alb.ingress.kubernetes.io/group.name: ""
+    alb.ingress.kubernetes.io/load-balancer-name: ""
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+
 scaledObject:
   enabled: false
   pollingInterval: 30

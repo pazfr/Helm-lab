@@ -23,9 +23,19 @@ ingress:
 
 traefikAlb:
   enabled: true
+  namespace: traefik-system
   host: dummy-app.purpleray.com
+  service:
+    name: traefik
+    port: 80
   annotations:
     alb.ingress.kubernetes.io/group.name: qa-external
     alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+
+traefik:
+  enabled: true
+  entryPoints:
+    - web
+  stickyCookieName: Session-ID
