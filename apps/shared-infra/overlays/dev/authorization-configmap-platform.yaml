@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: shared-configmap
-  namespace: platform
-data:
-  AUTH_URL: https://authorization.dev-eks.internal-services:5800

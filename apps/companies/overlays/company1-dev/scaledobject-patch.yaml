@@ -1,7 +1,0 @@
-# apiVersion: keda.sh/v1alpha1
-# kind: ScaledObject
-# metadata:
-#   name: companies-scaledobject
-# spec:
-#   scaleTargetRef:
-#     name: company1-companies

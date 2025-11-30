@@ -1,0 +1,4 @@
+apps/
+
+helm/values/services/*
+!helm/values/services/dummy-app*.yaml
