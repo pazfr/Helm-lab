@@ -74,7 +74,7 @@ haproxyAlb:
   ingressClassName: alb
   host: ""
   service:
-    name: haproxy-ingress
+    name: haproxy-ingress-kubernetes-ingress
     port: 80
   annotations:
     alb.ingress.kubernetes.io/group.name: ""
