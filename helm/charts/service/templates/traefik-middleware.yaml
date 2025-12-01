@@ -1,0 +1,12 @@
+{{- $mw := .Values.traefik.stickyHeaderMiddleware -}}
+{{- if and .Values.traefik.enabled $mw.enabled $mw.name }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ $mw.name }}
+  namespace: {{ $mw.namespace | default "traefik-system" }}
+spec:
+  stickySession:
+    header:
+      name: {{ $mw.headerName | default "service_session_token" }}
+{{- end }}

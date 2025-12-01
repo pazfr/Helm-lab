@@ -42,3 +42,8 @@ traefik:
   entryPoints:
     - web
   stickyCookieName: Session-ID
+  stickyHeaderMiddleware:
+    enabled: true
+    name: dummy-app-sticky-header
+    namespace: traefik-system
+    headerName: service_session_token
