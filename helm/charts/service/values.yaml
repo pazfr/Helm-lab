@@ -74,11 +74,6 @@ traefik:
     - web
   stickyCookieName: Session-ID
   routerMiddlewares: []
-  stickyHeaderMiddleware:
-    enabled: false
-    name: ""
-    namespace: traefik-system
-    headerName: service_session_token
 
 traefikAlb:
   enabled: false

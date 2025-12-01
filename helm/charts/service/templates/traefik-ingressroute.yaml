@@ -19,18 +19,9 @@ spec:
       sticky:
         cookie:
           name: {{ default "Session-ID" .Values.traefik.stickyCookieName }}
-    {{- $middlewares := list }}
     {{- if .Values.traefik.routerMiddlewares }}
-    {{- $middlewares = concat $middlewares .Values.traefik.routerMiddlewares }}
-    {{- end }}
-    {{- if and .Values.traefik.stickyHeaderMiddleware.enabled .Values.traefik.stickyHeaderMiddleware.name }}
-    {{- $stickyNs := default .Values.namespace .Values.traefik.stickyHeaderMiddleware.namespace }}
-    {{- $stickyName := .Values.traefik.stickyHeaderMiddleware.name }}
-    {{- $middlewares = append $middlewares (dict "name" $stickyName "namespace" $stickyNs) }}
-    {{- end }}
-    {{- if $middlewares }}
     middlewares:
-    {{- range $middlewares }}
+    {{- range .Values.traefik.routerMiddlewares }}
     - name: {{ .name }}
       namespace: {{ default $.Values.namespace .namespace }}
     {{- end }}
