@@ -1,0 +1,24 @@
+{{- if .Values.haproxyAlb.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-haproxy-alb" (include "service.fullname" .) }}
+  namespace: {{ .Values.haproxyAlb.namespace | default "haproxy-ingress" }}
+  annotations:
+{{- range $k, $v := .Values.haproxyAlb.annotations }}
+    {{ $k }}: {{ $v | quote }}
+{{- end }}
+spec:
+  ingressClassName: {{ .Values.haproxyAlb.ingressClassName | default "alb" }}
+  rules:
+  - host: {{ .Values.haproxyAlb.host | required "haproxyAlb.host is required when haproxyAlb.enabled=true" }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.haproxyAlb.service.name | default "haproxy-ingress" }}
+            port:
+              number: {{ .Values.haproxyAlb.service.port | default 80 }}
+{{- end }}

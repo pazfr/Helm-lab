@@ -68,26 +68,29 @@ domains:
   internal: internal-services
   public: public-services
 
-traefik:
+haproxyAlb:
   enabled: false
-  entryPoints:
-    - web
-  stickyCookieName: Session-ID
-  routerMiddlewares: []
-
-traefikAlb:
-  enabled: false
-  namespace: traefik-system
+  namespace: haproxy-ingress
   ingressClassName: alb
   host: ""
   service:
-    name: traefik
+    name: haproxy-ingress
     port: 80
   annotations:
     alb.ingress.kubernetes.io/group.name: ""
     alb.ingress.kubernetes.io/load-balancer-name: ""
+    alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/success-codes: "200-499"
+
+haproxyIngress:
+  enabled: false
+  ingressClassName: haproxy
+  host: ""
+  balanceHeader: Session-ID
+  annotations: {}
 
 scaledObject:
   enabled: false

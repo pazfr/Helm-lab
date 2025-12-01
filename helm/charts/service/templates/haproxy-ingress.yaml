@@ -1,0 +1,26 @@
+{{- if .Values.haproxyIngress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-haproxy" (include "service.fullname" .) }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    haproxy.org/ingress.class: {{ .Values.haproxyIngress.ingressClassName | default "haproxy" }}
+    haproxy.org/balance: {{ printf "hdr(%s)" (.Values.haproxyIngress.balanceHeader | default "Session-ID") | quote }}
+{{- with .Values.haproxyIngress.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  ingressClassName: {{ .Values.haproxyIngress.ingressClassName | default "haproxy" }}
+  rules:
+  - host: {{ .Values.haproxyIngress.host | required "haproxyIngress.host is required when haproxyIngress.enabled=true" }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ printf "%s-service" (include "service.fullname" .) }}
+            port:
+              number: {{ .Values.service.port }}
+{{- end }}

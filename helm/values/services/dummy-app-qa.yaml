@@ -11,22 +11,22 @@ config:
     FEATURE_FLAG: "qa-only-true"
 
 ingress:
-  enabled: false # disable direct ALB->dummy-app; we'll route via Traefik
+  enabled: false # disable direct ALB->dummy-app; we'll route via HAProxy
   annotations:
     alb.ingress.kubernetes.io/group.name: qa-external
     alb.ingress.kubernetes.io/load-balancer-name: qa-eks-external-alb
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]' # force HTTP-only so no TLS certificate is required
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     alb.ingress.kubernetes.io/healthcheck-path: /healthz
     alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
 #    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:495947449196:certificate/4a3a93b7-6a07-43f5-8d82-13ecd28be75e
 
-traefikAlb:
+haproxyAlb:
   enabled: true
-  namespace: traefik-system
+  namespace: haproxy-ingress
   host: dummy-app.purpleray.com
   service:
-    name: traefik
+    name: haproxy-ingress
     port: 80
   annotations:
     alb.ingress.kubernetes.io/group.name: qa-external
@@ -35,10 +35,10 @@ traefikAlb:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
     alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/success-codes: "200-499" # mark 404 from Traefik as healthy
+    alb.ingress.kubernetes.io/success-codes: "200-499"
 
-traefik:
+haproxyIngress:
   enabled: true
-  entryPoints:
-    - web
-  stickyCookieName: Session-ID
+  ingressClassName: haproxy
+  host: dummy-app.purpleray.com
+  balanceHeader: Session-ID
