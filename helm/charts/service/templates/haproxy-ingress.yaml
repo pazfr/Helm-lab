@@ -6,7 +6,10 @@ metadata:
   namespace: {{ .Values.namespace }}
   annotations:
     haproxy.org/ingress.class: {{ .Values.haproxyIngress.ingressClassName | default "haproxy" }}
-    haproxy.org/balance: {{ printf "hdr(%s)" (.Values.haproxyIngress.balanceHeader | default "Session-ID") | quote }}
+    {{- $hdr := .Values.haproxyIngress.balanceHeader | default "Session-ID" }}
+    haproxy.org/balance: {{ printf "hdr(%s)" $hdr | quote }}
+    haproxy.org/backend-config-snippet: |
+      balance hdr({{ $hdr }})
 {{- with .Values.haproxyIngress.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
