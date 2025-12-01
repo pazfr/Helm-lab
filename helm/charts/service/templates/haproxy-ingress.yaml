@@ -7,9 +7,7 @@ metadata:
   annotations:
     haproxy.org/ingress.class: {{ .Values.haproxyIngress.ingressClassName | default "haproxy" }}
     {{- $hdr := .Values.haproxyIngress.balanceHeader | default "Session-ID" }}
-    haproxy.org/balance: {{ printf "hdr(%s)" $hdr | quote }}
-    haproxy.org/backend-config-snippet: |
-      balance hdr({{ $hdr }})
+    haproxy.org/load-balance: {{ printf "hdr(%s)" $hdr | quote }}
 {{- with .Values.haproxyIngress.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
